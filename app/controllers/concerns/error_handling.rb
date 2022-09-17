@@ -1,11 +1,10 @@
 module ErrorHandling
   extend ActiveSupport::Concern
 
-  include do
+  included do
     rescue_from ActiveRecord::RecordNotFound, with: :notfound
 
     private
-  
     def notfound(er)
       logger.warn er
       render file: 'public/404.html', status: :not_found, layout: false
