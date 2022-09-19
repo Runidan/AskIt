@@ -3,7 +3,7 @@ class QuestionsController < ApplicationController
 
   def show
     @answer = @question.answers.build
-    @answers = Answer.order created_at: :desc
+    @answers =  @question.answers.order created_at: :desc
   end
   
   def destroy
@@ -18,6 +18,7 @@ class QuestionsController < ApplicationController
 
   def update
     if @question.update questions_params
+      flash[:success] = "Question update!"
       redirect_to questions_path
     else
       render :edit
