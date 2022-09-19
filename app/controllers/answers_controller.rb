@@ -1,12 +1,22 @@
 class AnswersController < ApplicationController
   before_action :set_question!
-  def create
-    answer = @question.answers.build answer_params
 
-    if answer.save
+  def destroy
+    answer = @question.answers.find params[:id]
+    answer.destroy
+    flash[:success] = "Answer deleted!"
+    redirect_to  question_path(@question)
+  end
+
+
+  def create
+    @answer = @question.answers.build answer_params
+
+    if @answer.save
       flash[:success] = "Answer created!"
       redirect_to  question_path(@question)
     else
+      @answers = Answer.order created_at: :desc
       render "questions/show"
     end
 
@@ -15,7 +25,7 @@ class AnswersController < ApplicationController
   private
 
   def answer_params
-    params.require(:question).permit(:title, :body)
+    params.require(:answer).permit(:body)
   end
 
   def set_question!
