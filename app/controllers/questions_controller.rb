@@ -3,7 +3,7 @@ class QuestionsController < ApplicationController
 
   def show
     @answer = @question.answers.build
-    @pagy, @answer = pagy @question.answers.order(created_at: :desc)
+    @pagy, @answers = pagy @question.answers.order(created_at: :desc)
   end
   
   def destroy
@@ -26,7 +26,7 @@ class QuestionsController < ApplicationController
   end
   
   def index
-    @pagy, @question = pagy Question.order(created_at: :desc)
+    @pagy, @questions = pagy Question.order(created_at: :desc)
   end
 
   def new
