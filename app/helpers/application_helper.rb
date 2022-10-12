@@ -1,5 +1,7 @@
 module ApplicationHelper
 
+  include Pagy::Frontend
+
   def nav_tab(title, url, option ={})
     current_page = option.delete :current_page
 
