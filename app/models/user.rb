@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  attr_accessor :old_password
+  attr_accessor :old_password, :remember_token
 
   has_secure_password validations: false
 
@@ -11,7 +11,22 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true, 'valid_email_2/email': true
   validate :password_complexity
 
+  def remember_me
+    self.remember_token = SecureRandom.urlsafe_base64 #сгенерирует случайный токен https://ruby-doc.org/stdlib-1.9.3/libdoc/securerandom/rdoc/SecureRandom.html#method-c-urlsafe_base64
+    updated_column :remember_token_digest, digest(remember_token)
+  end
+
+  def remember_token_authenticated?(remember_token)
+    BCrypt::Password.new(remember_token_digest).is_password?(remember_token)
+  end
+  
   private
+
+  def digest(string) #создает код определенной сложности
+    cost = ActiveModel::SecurePassword.
+      min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
+    BCrypt::Password.create(string, cost: cost) #возвращает строку в 60 случайных символов
+  end
 
   def correct_old_password
     return if BCrypt::Password.new(password_digest_was).is_password?(old_password)
